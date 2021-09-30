@@ -1,6 +1,6 @@
 // LICENSE : MIT
 "use strict";
-const groupBy = require("lodash.groupby");
+import groupBy from "lodash.groupby";
 export default function commentsTo(ast, options) {
     const fontSize = options.fontSize;
     const commentsByLine = groupBy(ast.comments, (comment) => {

@@ -17,7 +17,8 @@
   ],
   "version": "1.0.0",
   "description": "Syntax Highlighted JavaScript code to SVG",
-  "main": "lib/jscode-to-svg.js",
+  "type": "module",
+  "main": "src/jscode-to-svg.js",
   "directories": {
     "test": "test"
   },

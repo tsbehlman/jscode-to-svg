@@ -1,9 +1,9 @@
 // LICENSE : MIT
 "use strict";
-const espree = require("espree");
-import astToSVG from "./ast-to-svg";
-import commentsPlugin  from "./plugins/comments"
-import tokensPlugin  from "./plugins/tokens"
+import espree from "espree";
+import astToSVG from "./ast-to-svg.js";
+import commentsPlugin  from "./plugins/comments.js"
+import tokensPlugin  from "./plugins/tokens.js"
 const defaultPlugins = [
     tokensPlugin,
     commentsPlugin
