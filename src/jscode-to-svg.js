@@ -46,6 +46,7 @@ const defaultTheme = {
 const defaultFormattingOptions = {
     fontFamily: "monospace",
     fontSize: 12,
+    lineHeight: 12,
     charWidth: 6,
     width: "auto",
     height: "auto",
@@ -62,6 +63,7 @@ function mergeWithDefaultFormattingOptions(formattingOptions = defaultFormatting
     return {
         ...defaultFormattingOptions,
         charWidth: (formattingOptions.fontSize || defaultFormattingOptions.fontSize) / 2,
+        lineHeight: formattingOptions.fontSize || defaultFormattingOptions.fontSize,
         ...formattingOptions,
         theme,
     };

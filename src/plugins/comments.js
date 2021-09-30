@@ -2,13 +2,12 @@
 "use strict";
 import groupBy from "../utils/groupby.js";
 export default function commentsTo(ast, options) {
-    const fontSize = options.fontSize;
     const commentsByLine = groupBy(ast.comments, (comment) => {
         return comment.loc.start.line;
     });
     return Object.entries(commentsByLine).map(([ line, comments ]) => {
-        const x = comments[0].loc.start.column;
-        const y = comments[0].loc.start.line;
+        const x = comments[0].loc.start.column * options.charWidth;
+        const y = comments[0].loc.start.line * options.lineHeight;
         const tspans = comments.map((comment, index) => {
             // TODO: support multi line comment
             if (comment.type !== "Line") {
@@ -22,6 +21,6 @@ export default function commentsTo(ast, options) {
             const value = `// ${comment.value}`;
             return `${margin}<tspan class="Comment ${comment.type}">${value}</tspan>`;
         }).filter((text) => text != null);
-        return `<text x="${x * options.charWidth}" y="${y * fontSize}">${tspans.join("")}</text>`;
+        return `<text x="${x}" y="${y}">${tspans.join("")}</text>`;
     });
 }

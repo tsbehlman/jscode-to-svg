@@ -25,7 +25,7 @@ export default function process(ast, options) {
     
     let viewHeight;
     if (options.width === "auto") {
-        viewHeight = ( ast.loc.end.line + 1 ) * options.fontSize;
+        viewHeight = ( ast.loc.end.line + 1 ) * options.lineHeight;
     } else {
         viewHeight = options.height;
     }
