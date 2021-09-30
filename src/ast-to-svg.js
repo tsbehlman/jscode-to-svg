@@ -1,6 +1,6 @@
-export default function process(ast, plugins, options) {
+export default function process(ast, options) {
     let contents = [];
-    plugins.forEach(plugin => {
+    options.plugins.forEach(plugin => {
         const nodes = plugin(ast, options);
         if (!Array.isArray(nodes)) {
             nodes.push(node);

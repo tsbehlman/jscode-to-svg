@@ -2,13 +2,47 @@
 "use strict";
 import espree from "espree";
 import astToSVG from "./ast-to-svg.js";
-import commentsPlugin  from "./plugins/comments.js"
-import tokensPlugin  from "./plugins/tokens.js"
+import commentsPlugin  from "./plugins/comments.js";
+import tokensPlugin  from "./plugins/tokens.js";
+
 const defaultPlugins = [
     tokensPlugin,
     commentsPlugin
 ];
-export function toSVG(code, plugins = defaultPlugins) {
+
+const defaultTheme = {
+    Keyword: "#159393b",
+    Identifier: "#516aec",
+    Boolean: "#159393",
+    Null: "#159393",
+    String: "#159393",
+    RegExp: "#159393",
+    Comment: "#9e8f9e"
+};
+
+const defaultOptions = {
+    fontFamily: "monospace",
+    fontSize: 12,
+    width: 200,
+    height: "auto",
+    plugins: defaultPlugins,
+    theme: defaultTheme
+};
+
+function mergeWithDefaultOptions(options = defaultOptions) {
+    const theme = {
+        ...defaultOptions.theme,
+        ...options.theme
+    };
+    
+    return {
+        ...defaultOptions,
+        ...options,
+        theme,
+    };
+}
+
+export function toSVG(code, options = defaultOptions) {
     var ast = espree.parse(code, {
         // attach range information to each node
         range: true,
@@ -37,24 +71,12 @@ export function toSVG(code, plugins = defaultPlugins) {
             experimentalObjectRestSpread: true
         }
     });
-    const options = {
-        fontFamily: "monospace",
-        fontSize: 12,
-        css: `
-.Keyword {
-    fill: #159393b;
-}
-.Identifier{
-    fill: #516aec;
-}
-.Boolean, .Null, .String, .RegExp {
-    fill: #159393;
-}
-.Comment {
-    fill: #9e8f9e;
-}`,
-        width: "200",
-        height: "auto"
-    };
-    return astToSVG(ast, plugins, options);
+    
+    options = mergeWithDefaultOptions(options);
+    
+    options.css = Object.entries(options.theme)
+        .map(([ type, color ]) => `.${type} { fill: ${color}; }`)
+        .join("\n");
+    
+    return astToSVG(ast, options);
 }
