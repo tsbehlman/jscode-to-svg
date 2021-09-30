@@ -45,7 +45,6 @@
     "power-assert": "^1.4.1"
   },
   "dependencies": {
-    "espree": "^3.1.6",
-    "lodash.groupby": "^4.4.0"
+    "espree": "^3.1.6"
   }
 }
