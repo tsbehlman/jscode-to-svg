@@ -17,6 +17,6 @@ export default function tokens(ast, options = {}){
             }
             return `${margin}<tspan class="${token.type}">${token.value}</tspan>`;
         });
-        return `<text x="${x * fontSize}" y="${y * fontSize}">${tspans.join("")}</text>`;
+        return `<text x="${x * options.charWidth}" y="${y * fontSize}">${tspans.join("")}</text>`;
     });
 }

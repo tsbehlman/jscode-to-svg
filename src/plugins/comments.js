@@ -22,6 +22,6 @@ export default function commentsTo(ast, options) {
             const value = `// ${comment.value}`;
             return `${margin}<tspan class="Comment ${comment.type}">${value}</tspan>`;
         }).filter((text) => text != null);
-        return `<text x="${x * fontSize}" y="${y * fontSize}">${tspans.join("")}</text>`;
+        return `<text x="${x * options.charWidth}" y="${y * fontSize}">${tspans.join("")}</text>`;
     });
 }

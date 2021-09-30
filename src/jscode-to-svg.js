@@ -23,6 +23,7 @@ const defaultTheme = {
 const defaultOptions = {
     fontFamily: "monospace",
     fontSize: 12,
+    charWidth: 6,
     width: 200,
     height: "auto",
     plugins: defaultPlugins,
@@ -37,6 +38,7 @@ function mergeWithDefaultOptions(options = defaultOptions) {
     
     return {
         ...defaultOptions,
+        charWidth: (options.fontSize || defaultOptions.fontSize) / 2,
         ...options,
         theme,
     };
