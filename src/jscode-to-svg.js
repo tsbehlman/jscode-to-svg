@@ -47,7 +47,7 @@ const defaultFormattingOptions = {
     fontFamily: "monospace",
     fontSize: 12,
     charWidth: 6,
-    width: 200,
+    width: "auto",
     height: "auto",
     plugins: defaultPlugins,
     theme: defaultTheme
