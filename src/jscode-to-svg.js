@@ -1,6 +1,6 @@
 // LICENSE : MIT
 "use strict";
-import espree from "espree";
+import { parse } from "espree";
 import astToSVG from "./ast-to-svg.js";
 import commentsPlugin  from "./plugins/comments.js";
 import tokensPlugin  from "./plugins/tokens.js";
@@ -43,20 +43,17 @@ function mergeWithDefaultOptions(options = defaultOptions) {
 }
 
 export function toSVG(code, options = defaultOptions) {
-    var ast = espree.parse(code, {
+    var ast = parse(code, {
         // attach range information to each node
         range: true,
         // attach line/column location information to each node
         loc: true,
         // create a top-level comments array containing all comments
         comment: true,
-        // attach comments to the closest relevant node as leadingComments and
-        // trailingComments
-        attachComment: true,
         // create a top-level tokens array containing all tokens
         tokens: true,
         // specify the language version (3, 5, 6, or 7, default is 5)
-        ecmaVersion: 7,
+        ecmaVersion: "latest",
         // specify which type of script you're parsing (script or module, default is script)
         sourceType: "module",
         // specify additional language features
@@ -67,8 +64,6 @@ export function toSVG(code, options = defaultOptions) {
             globalReturn: true,
             // enable implied strict mode (if ecmaVersion >= 5)
             impliedStrict: true,
-            // allow experimental object rest/spread
-            experimentalObjectRestSpread: true
         }
     });
     
