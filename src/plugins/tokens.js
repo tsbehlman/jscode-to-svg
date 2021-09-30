@@ -8,13 +8,13 @@ export default function tokens(ast, options = {}){
     });
     return Object.keys(tokensByLine).map(line => {
         const tokens = tokensByLine[line];
-        const x = tokens[0].loc.start.column + 1;
+        const x = tokens[0].loc.start.column;
         const y = tokens[0].loc.start.line;
         const tspans = tokens.map((token, index) => {
             const prevToken = tokens[index - 1];
             let margin = "";
             if (prevToken) {
-                margin = new Array((token.start - prevToken.end) + 1).join(" ");
+                margin = " ".repeat(token.start - prevToken.end);
             }
             return `${margin}<tspan class="${token.type}">${token.value}</tspan>`;
         });
