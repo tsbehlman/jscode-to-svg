@@ -31,9 +31,7 @@ export default function process(ast, options) {
     }
     
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${viewWidth}" height="${viewHeight}" viewBox="0 0 ${viewWidth} ${viewHeight}">
-    <style>${options.css}</style>
-    <g id="jscode-to-svg-container" font-family="${options.fontFamily}" font-size="${options.fontSize}">
+<style>${options.css}</style>
 ${contents.join("\n")}
-    </g>
 </svg>`
 }

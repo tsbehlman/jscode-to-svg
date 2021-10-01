@@ -76,9 +76,20 @@ export function toSVG(code, parsingOptions, formattingOptions) {
     
     formattingOptions = mergeWithDefaultFormattingOptions(formattingOptions);
     
-    formattingOptions.css = Object.entries(formattingOptions.theme)
+    const themeCSS = Object.entries(formattingOptions.theme)
         .map(([ type, color ]) => `.${type} { fill: ${color}; }`)
         .join("\n");
+    
+    formattingOptions.css = `
+* {
+    white-space: pre;
+}
+svg {
+    font-size: ${formattingOptions.fontSize}px;
+    font-family: ${formattingOptions.fontFamily};
+}
+${themeCSS}
+`;
     
     return astToSVG(ast, formattingOptions);
 }
