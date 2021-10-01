@@ -1,8 +1,9 @@
 // LICENSE : MIT
 "use strict";
 import groupBy from "../utils/groupby.js";
+import splitMultilineTokens from "../utils/splitMultilineTokens.js";
 export default function tokens(ast, options = {}){
-    const tokensByLine = groupBy(ast.tokens, (token) => {
+    const tokensByLine = groupBy(splitMultilineTokens(ast.tokens), (token) => {
         return token.loc.start.line;
     });
     return Object.entries(tokensByLine).map(([ line, tokens ]) => {
