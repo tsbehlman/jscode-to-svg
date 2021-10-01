@@ -3,6 +3,7 @@
 import { parse } from "espree";
 import astToSVG from "./ast-to-svg.js";
 import commentsPlugin  from "./plugins/comments.js";
+import splitMultilineTokensPlugin from "./plugins/splitMultilineTokens.js";
 import tokensPlugin  from "./plugins/tokens.js";
 
 const defaultParsingOptions = {
@@ -29,8 +30,9 @@ function mergeWithDefaultParsingOptions(parsingOptions = defaultParsingOptions) 
 }
 
 const defaultPlugins = [
-    tokensPlugin,
-    commentsPlugin
+    commentsPlugin,
+    splitMultilineTokensPlugin,
+    tokensPlugin
 ];
 
 const defaultTheme = {

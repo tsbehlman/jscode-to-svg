@@ -1,7 +1,10 @@
-export default function splitMultilineTokens(tokens) {
+// LICENSE : MIT
+"use strict";
+
+export default function splitMultilineTokens(ast, options) {
     const splitTokens = [];
     
-    for (const token of tokens) {
+    for (const token of ast.tokens) {
         const { start, end } = token.loc;
         if (start.line === end.line) {
             splitTokens.push(token);
@@ -30,5 +33,5 @@ export default function splitMultilineTokens(tokens) {
         }
     }
     
-    return splitTokens;
+    ast.tokens = splitTokens;
 }
