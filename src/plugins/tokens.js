@@ -13,18 +13,27 @@ export default function tokens(ast, options = {}){
     return Object.entries(tokensByLine).map(([ line, tokens ]) => {
         const y = tokens[0].loc.start.line * options.lineHeight;
         const lineMargin = " ".repeat(tokens[0].loc.start.column);
-        const tspans = tokens.map((token, index) => {
-            const prevToken = tokens[index - 1];
-            let margin = "";
-            if (prevToken) {
-                margin = " ".repeat(token.start - prevToken.end);
-            }
+        if (tokens.length === 1) {
+            const [token] = tokens;
             if (isTokenStyled(token, options)) {
-                return `${margin}<tspan class="${token.type}">${token.value}</tspan>`;
+                return `<text y="${y}" class="${token.type}">${lineMargin}${token.value}</text>`;
             } else {
-                return `${margin}${token.value}`
+                return `<text y="${y}">${lineMargin}${token.value}</text>`;
             }
-        });
-        return `<text y="${y}">${lineMargin}${tspans.join("")}</text>`;
+        } else {
+            const tspans = tokens.map((token, index) => {
+                const prevToken = tokens[index - 1];
+                let margin = "";
+                if (prevToken) {
+                    margin = " ".repeat(token.start - prevToken.end);
+                }
+                if (isTokenStyled(token, options)) {
+                    return `${margin}<tspan class="${token.type}">${token.value}</tspan>`;
+                } else {
+                    return `${margin}${token.value}`
+                }
+            });
+            return `<text y="${y}">${lineMargin}${tspans.join("")}</text>`;
+        }
     });
 }
