@@ -30,8 +30,26 @@ export default function process(ast, options) {
         viewHeight = options.height;
     }
     
+    const tokenTypes = new Set(ast.tokens.map(token => token.type.split(" ")).flat());
+    
+    const themeCSS = Object.entries(options.theme)
+            .filter(([type]) => tokenTypes.has(type))
+            .map(([ type, color ]) => `.${type} { fill: ${color}; }`)
+            .join("\n");
+
+    const css = `
+* {
+    white-space: pre;
+}
+svg {
+    font-size: ${options.fontSize}px;
+    font-family: ${options.fontFamily};
+}
+${themeCSS}
+`;
+    
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${viewWidth}" height="${viewHeight}" viewBox="0 0 ${viewWidth} ${viewHeight}">
-<style>${options.css}</style>
+<style>${css}</style>
 ${contents.join("\n")}
 </svg>`
 }
