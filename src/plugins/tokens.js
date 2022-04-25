@@ -3,6 +3,10 @@
 
 import groupBy from "../utils/groupby.js";
 
+function isTokenStyled(token, options) {
+    return token.type.split(" ").some(type => type in options.theme);
+}
+
 export default function tokens(ast, options = {}){
     const tokensByLine = groupBy(ast.tokens, token => token.loc.start.line);
     
@@ -15,7 +19,11 @@ export default function tokens(ast, options = {}){
             if (prevToken) {
                 margin = " ".repeat(token.start - prevToken.end);
             }
-            return `${margin}<tspan class="${token.type}">${token.value}</tspan>`;
+            if (isTokenStyled(token, options)) {
+                return `${margin}<tspan class="${token.type}">${token.value}</tspan>`;
+            } else {
+                return `${margin}${token.value}`
+            }
         });
         return `<text y="${y}">${lineMargin}${tspans.join("")}</text>`;
     });

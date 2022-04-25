@@ -4,7 +4,7 @@ import { parse } from "espree";
 import astToSVG from "./ast-to-svg.js";
 import commentsPlugin  from "./plugins/comments.js";
 import splitMultilineTokensPlugin from "./plugins/splitMultilineTokens.js";
-import tokensPlugin  from "./plugins/tokens.js";
+import tokensPlugin from "./plugins/tokens.js";
 
 const defaultParsingOptions = {
     loc: true,
@@ -57,17 +57,11 @@ const defaultFormattingOptions = {
 };
 
 function mergeWithDefaultFormattingOptions(formattingOptions = defaultFormattingOptions) {
-    const theme = {
-        ...defaultFormattingOptions.theme,
-        ...formattingOptions.theme
-    };
-    
     return {
         ...defaultFormattingOptions,
         charWidth: (formattingOptions.fontSize || defaultFormattingOptions.fontSize) / 2,
         lineHeight: formattingOptions.fontSize || defaultFormattingOptions.fontSize,
         ...formattingOptions,
-        theme,
     };
 }
 
