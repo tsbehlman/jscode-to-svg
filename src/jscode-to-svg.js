@@ -1,48 +1,28 @@
 // LICENSE : MIT
 "use strict";
-import { parse } from "espree";
+import { lowlight } from "lowlight/lib/core.js";
+const { registerLanguage, highlight } = lowlight;
+import typescript from "highlight.js/lib/languages/typescript";
 import astToSVG from "./ast-to-svg.js";
-import commentsPlugin  from "./plugins/comments.js";
 import splitMultilineTokensPlugin from "./plugins/splitMultilineTokens.js";
 import tokensPlugin from "./plugins/tokens.js";
 
-const defaultParsingOptions = {
-    loc: true,
-    comment: true,
-    tokens: true,
-    ecmaVersion: "latest",
-    sourceType: "module",
-    ecmaFeatures: {
-        jsx: true,
-        globalReturn: true
-    }
-};
-
-function mergeWithDefaultParsingOptions(parsingOptions = defaultParsingOptions) {
-    return {
-        ...defaultParsingOptions,
-        ...parsingOptions,
-        ecmaFeatures: {
-            ...defaultParsingOptions.ecmaFeatures,
-            ...parsingOptions.ecmaFeatures
-        }
-    };
-}
+registerLanguage("typescript", typescript);
 
 const defaultPlugins = [
-    commentsPlugin,
     splitMultilineTokensPlugin,
     tokensPlugin
 ];
 
 const defaultTheme = {
-    Keyword: "#159393b",
-    Identifier: "#516aec",
-    Boolean: "#159393",
-    Null: "#159393",
-    String: "#159393",
-    RegExp: "#159393",
-    Comment: "#9e8f9e"
+    keyword: "#0000FF",
+    number: "#0000CD",
+    boolean: "#C5060B",
+    built_in: "#585CF6",
+    string: "#036A07",
+    regexp: "#036A07",
+    comment: "#0066FF",
+    subst: "#26B31A",
 };
 
 const defaultFormattingOptions = {
@@ -65,10 +45,64 @@ function mergeWithDefaultFormattingOptions(formattingOptions = defaultFormatting
     };
 }
 
-export function toSVG(code, parsingOptions, formattingOptions) {
-    parsingOptions = mergeWithDefaultParsingOptions(parsingOptions);
+const BUILTIN_LITERALS = new Set([ "null", "undefined", "NaN", "Infinity" ]);
+const BOOLEAN_LITERALS = new Set([ "true", "false" ]);
+
+function sanitizeClassName(className) {
+    return className.replaceAll(/_$/g, "");
+}
+
+function sanitizeToken({ type, value }) {
+    if (type.endsWith("literal") || type.endsWith("title class")) {
+        if (BUILTIN_LITERALS.has(value)) {
+            return {
+                type: type.replace(/(literal|title class)$/, "literal built_in"),
+                value,
+            };
+        } else if (BOOLEAN_LITERALS.has(value)) {
+            return {
+                type: type.replace(/(literal|title class)$/, "literal boolean"),
+                value,
+            };
+        }
+    }
     
-    const ast = parse(code, parsingOptions);
+    return { type, value };
+}
+
+function tokensFromNode(node) {
+    const tokens = [];
+    const parentTypes = [];
+    const nodesToVisit = [ ...node.children ];
+    
+    while (nodesToVisit.length > 0) {
+        const node = nodesToVisit.shift();
+        if (node === null) {
+            parentTypes.pop();
+        } else {
+            if (node.value && node.value.length > 0) {
+                tokens.push(sanitizeToken({
+                    type: parentTypes.join(" "),
+                    value: node.value,
+                }));
+            }
+            if (node.children) {
+                parentTypes.push(node.properties.className.map(sanitizeClassName).join(" "));
+                nodesToVisit.unshift(null);
+                nodesToVisit.unshift( ...node.children );
+            }
+        }
+    }
+    
+    return tokens;
+}
+
+export function toSVG(code, formattingOptions) {
+    
+    const rootNode = highlight("typescript", code, { prefix: "" });
+    const ast = {
+        tokens: tokensFromNode(rootNode),
+    };
     
     formattingOptions = mergeWithDefaultFormattingOptions(formattingOptions);
     

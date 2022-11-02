@@ -9,23 +9,18 @@ export default function process(ast, options) {
     
     let viewWidth;
     if (options.width === "auto") {
-        let highestColumn = 0;
-        highestColumn = ast.tokens.reduce(
-            (highestColumn, token) => Math.max(token.loc.end.column, highestColumn),
-            highestColumn
+        let longestColumn = ast.tokens.reduce(
+            (longestColumn, token) => Math.max(token.columnNumber + token.value.length, longestColumn),
+            0
         );
-        highestColumn = ast.comments.reduce(
-            (highestColumn, comment) => Math.max(comment.loc.end.column, highestColumn),
-            highestColumn
-        );
-        viewWidth = Math.round( highestColumn * options.charWidth );
+        viewWidth = Math.round( longestColumn * options.charWidth );
     } else {
         viewWidth = options.width;
     }
     
     let viewHeight;
     if (options.width === "auto") {
-        viewHeight = ( ast.loc.end.line + 1 ) * options.lineHeight;
+        viewHeight = ( ast.tokens[ast.tokens.length - 1].lineNumber + 1 ) * options.lineHeight;
     } else {
         viewHeight = options.height;
     }
@@ -38,10 +33,8 @@ export default function process(ast, options) {
             .join("\n");
 
     const css = `
-* {
+text, tspan {
     white-space: pre;
-}
-svg {
     font-size: ${options.fontSize}px;
     font-family: ${options.fontFamily};
 }

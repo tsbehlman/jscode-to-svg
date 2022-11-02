@@ -3,34 +3,26 @@
 
 export default function splitMultilineTokens(ast, options) {
     const splitTokens = [];
+    let lineNumber = 1;
+    let columnNumber = 0;
     
     for (const token of ast.tokens) {
-        const { start, end } = token.loc;
-        if (start.line === end.line) {
-            splitTokens.push(token);
-        } else {
-            const lines = token.value.split(/\r?\n/g);
-            lines.forEach((line, lineOffset) => {
+        const lines = token.value.split(/\r?\n/g);
+        lines.forEach((line, lineOffset) => {
+            if (lineOffset > 0) {
+                lineNumber += 1;
+                columnNumber = 0;
+            }
+            if (line.length > 0) {
                 splitTokens.push({
                     ...token,
                     value: line,
-                    loc: {
-                        start: {
-                            line: start.line + lineOffset,
-                            column: lineOffset === 0
-                                ? start.column
-                                : 0
-                        },
-                        end: {
-                            line: start.line + lineOffset,
-                            column: lineOffset === 0
-                                ? end.column + line.length
-                                : line.length
-                        }
-                    }
+                    lineNumber,
+                    columnNumber,
                 });
-            });
-        }
+            }
+            columnNumber += line.length;
+        });
     }
     
     ast.tokens = splitTokens;

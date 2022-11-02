@@ -1,4 +1,4 @@
-export default function groupby(items, keyGenerator) {
+export default function groupBy(items, keyGenerator) {
     const map = new Map();
 
     for (const item of items) {
@@ -10,5 +10,5 @@ export default function groupby(items, keyGenerator) {
         }
     }
 
-    return Object.fromEntries(map);
+    return map;
 }
